@@ -40,7 +40,7 @@ jobs:
         with:
           path: ./docs/_site
           name: github-pages
-          retention.days: 1
+          retention-days: 1
 
   # Deployment job
   deploy:
