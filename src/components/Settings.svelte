@@ -179,6 +179,14 @@
 				const addedNode = addedNodes[index] as HTMLElement;
 
 				if (addedNode?.tagName === 'P') {
+					// Send message to websocket if exists
+					if ($websocketUrl$) {
+						const message = addedNode.textContent;
+						const ws = new WebSocket($websocketUrl$);
+
+						ws.onopen = () => ws.send(message);
+					}
+
 					newLine$.next([addedNode.textContent, LineType.EXTERNAL]);
 					addedNode.remove();
 				}
