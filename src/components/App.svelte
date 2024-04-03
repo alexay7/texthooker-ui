@@ -147,7 +147,18 @@
 
 	const pasteHandler$ = enablePaste$.pipe(
 		switchMap((enablePaste) => (enablePaste ? fromEvent(document, 'paste') : NEVER)),
-		tap((event: ClipboardEvent) => newLine$.next([event.clipboardData.getData('text/plain'), LineType.PASTE])),
+		tap((event: ClipboardEvent) => {
+			// Create new line
+			newLine$.next([event.clipboardData.getData('text/plain'), LineType.PASTE])
+
+			// Send message to websocket if exists
+			if ($websocketUrl$) {
+				const message = event.clipboardData.getData('text/plain');
+				const ws = new WebSocket($websocketUrl$);
+
+				ws.onopen = () => ws.send(message);
+			}
+		}),
 		reduceToEmptyString(),
 	);
 
