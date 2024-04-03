@@ -179,12 +179,20 @@
 				const addedNode = addedNodes[index] as HTMLElement;
 
 				if (addedNode?.tagName === 'P') {
-					// Send message to websocket if exists
+					console.log($websocketUrl$);
 					if ($websocketUrl$) {
+						// Send message to websocket url if exists
 						const message = addedNode.textContent;
-						const ws = new WebSocket($websocketUrl$);
 
-						ws.onopen = () => ws.send(message);
+						if (message) {
+							const ws = new WebSocket($websocketUrl$);
+
+							ws.onopen = () => {
+								ws.send(message);
+								ws.close();
+							};
+						}
+						
 					}
 
 					newLine$.next([addedNode.textContent, LineType.EXTERNAL]);
